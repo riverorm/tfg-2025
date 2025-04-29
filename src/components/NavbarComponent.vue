@@ -1,12 +1,5 @@
 <template>
   <nav>
-    <div class="nav-header">
-      <button>
-        <RouterLink to="/profile" id="profile" class="css-routerLink">
-          <h3><i class="fa-solid fa-user"></i> Perfil</h3>
-        </RouterLink>
-      </button>
-    </div>
     <div class="nav-center">
       <button>
         <RouterLink to="/home" id="home" class="css-routerLink">
@@ -23,14 +16,20 @@
           <h3><i class="fa-regular fa-comments"></i> Chat grupal</h3>
         </RouterLink>
       </button>
+      <button>
+        <RouterLink to="/profile" id="profile" class="css-routerLink">
+          <h3><i class="fa-solid fa-user"></i> Perfil</h3>
+        </RouterLink>
+      </button>
     </div>
     <div class="nav-footer">
-      <button @click="handleLogout" to="/" id="logout" class="css-routerLink">
+      <button @click="handleLogout" id="logout" class="css-routerLink">
         <h3><i class="fa-solid fa-right-from-bracket"></i> Salir</h3>
       </button>
     </div>
   </nav>
 </template>
+
 
 <script>
 import { auth } from "../firebaseConfig";
@@ -56,7 +55,7 @@ export default {
 nav {
   width: 17%;
   height: 100dvh;
-  background-color: #eeeded9a;
+  background-color: #eeededc0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -84,7 +83,7 @@ button {
   background-color: transparent;
   color: rgb(102, 99, 99);
   cursor: pointer;
-  border: 2px solid rgba(226, 202, 179, 0.473);
+  border: 2px solid rgba(80, 79, 79, 0.192);
   display: flex;
   flex-direction: row;
   justify-content: flex-start;

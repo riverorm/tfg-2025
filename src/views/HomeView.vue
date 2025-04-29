@@ -1,17 +1,35 @@
+<script setup>
+import CalendarComponent from '@/components/CalendarComponent.vue';
+
+
+</script>
+
 <template>
-    <div>
-      <h1>Bienvenido a la App de Gestión de Tareas</h1>
+    <div class="container animate-appear">
+      <CalendarComponent />
     </div>
-  </template>
+</template>
   
-  <script setup>
-  </script>
+  
   
   <style scoped>
-  h1 {
-    color: #42b983;
-    text-align: center;
-    margin-top: 50px;
-  }
+ .container {
+  width: calc(100% - 250px);
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.lists {
+  height: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 10px;
+}
   </style>
 

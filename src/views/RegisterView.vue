@@ -2,6 +2,7 @@
   <LiviitComponent/>
   <div class="register">
     <h1 class="title">Aprende a convivir</h1>
+    <hr />
     <form @submit.prevent="handleRegister">
       <div>
         <label for="name">Nombre de usuario</label>
@@ -54,7 +55,7 @@ export default {
           groupId: null,
         });
 
-        this.$router.push('/home').then(() => {
+        this.$router.push('/group').then(() => {
           window.location.reload();
       });
       } catch (error) {
@@ -106,6 +107,14 @@ input {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin-bottom: 20px;
+}
+
+
 input:focus {
   border-color: #007bff;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
@@ -115,7 +124,7 @@ input:focus {
 button {
   width: 100%;
   padding: 12px;
-  background: #16cf10be;
+  background: #3bb6f0be;
   color: white;
   border: none;
   border-radius: 6px;
@@ -126,8 +135,8 @@ button {
 }
 
 button:hover {
-  background-color: #029229;
-  transform: translateY(-2px);
+  background-color: #207fcc;
+  transform: translateY(-1px);
 }
 
 button:active {

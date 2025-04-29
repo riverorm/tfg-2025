@@ -4,7 +4,7 @@ import NavBar from './components/NavbarComponent.vue';
 import { computed } from 'vue';
 
 const route = useRoute()
-const hideNavbarRoutes = ['Login', 'Register'];
+const hideNavbarRoutes = ['Login', 'Register', 'Group'];
 const hideNavBar = computed (() => hideNavbarRoutes.includes(route.name));
 </script>
 

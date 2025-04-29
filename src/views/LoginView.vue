@@ -2,6 +2,7 @@
   <div class="login">
 
     <h1>Inicia Sesión</h1>
+    <hr></hr>
     <form @submit.prevent="handleLogin">
       <div>
         <label for="email">Correo electrónico</label>
@@ -68,6 +69,14 @@ h1 {
   margin-bottom: 20px;
 }
 
+hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin-bottom: 20px;
+}
+
+
 form div {
   margin-bottom: 20px;
 }
@@ -112,7 +121,7 @@ button {
 
 button:hover {
   background-color: #0056b3;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 button:active {
