@@ -1,5 +1,7 @@
 <script setup>
 import CalendarComponent from '@/components/CalendarComponent.vue';
+import DoneList from '@/components/DoneList.vue';
+import UndoneList from '@/components/UndoneList.vue';
 
 
 </script>
@@ -7,13 +9,18 @@ import CalendarComponent from '@/components/CalendarComponent.vue';
 <template>
     <div class="container animate-appear">
       <CalendarComponent />
+  
+    <div class="lists">
+      <UndoneList />
+      <DoneList />
     </div>
+  </div>
 </template>
   
   
   
-  <style scoped>
- .container {
+<style scoped>
+.container {
   width: calc(100% - 250px);
   max-height: 100dvh;
   display: flex;

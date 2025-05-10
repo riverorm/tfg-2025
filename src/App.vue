@@ -13,7 +13,7 @@ const hideNavBar = computed (() => hideNavbarRoutes.includes(route.name));
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
   <div id="app">
-    <main :class="!hideNavBar ? 'papi' : ''">
+    <main :class="!hideNavBar ? 'with-layout' : ''">
       <NavBar v-if="!hideNavBar" />
       <RouterView />
     </main>
@@ -21,7 +21,7 @@ const hideNavBar = computed (() => hideNavbarRoutes.includes(route.name));
 </template>
 
 <style scoped>
-.papi {
+.with-layout {
   display: flex;
   align-items: stretch;
   flex-direction: row;

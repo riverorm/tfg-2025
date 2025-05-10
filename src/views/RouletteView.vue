@@ -1,28 +1,32 @@
 <script setup>
-import { ref } from 'vue';
+onMounted(() => {
+  fetchHistory();
+});
 
+import { ref, onMounted } from 'vue';
 import { getAuth } from 'firebase/auth';
-import { addDoc, collection, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, query, where, orderBy, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
+
 import RouletteComponent from '@/components/RouletteComponent.vue';
 import RecordRoulette from '@/components/RecordRoulette.vue';
+import ModalRouletteComponent from '@/components/ModalRouletteComponent.vue';
 
 const history = ref([]);
-const showAlert = ref(false)
-const currentTask = ref('')
+const showAlert = ref(false);
+const currentTask = ref('');
 
 function onRouletteSelection(task) {
-  currentTask.value = task
-  showAlert.value = true
+  currentTask.value = task;
+  showAlert.value = true;
 }
 
-function acceptDate(data) {
-  saveTaskToFirebase(currentTask.value, data)
-  showAlert.value = false
+function acceptDate(date) {
+  saveTaskToFirebase(currentTask.value, date);
+  showAlert.value = false;
 }
 
 async function saveTaskToFirebase(task, date) {
-
   if (!task || !date) {
     alert("Por favor, selecciona una fecha.");
     return;
@@ -34,7 +38,6 @@ async function saveTaskToFirebase(task, date) {
     return;
   }
 
-  // Consultar el groupId del usuario actual
   const userDoc = await getDoc(doc(db, "users", user.uid));
   if (!userDoc.exists()) {
     alert("No se encontró el grupo del usuario.");
@@ -51,22 +54,55 @@ async function saveTaskToFirebase(task, date) {
       isDone: false,
       time: serverTimestamp(),
       userId: user.uid,
-      groupId, // Agregar el groupId al documento
+      groupId,
     };
-    console.log(taskData)
 
-    const taskRef = collection(db, "taskAssignments")
-    const result = await addDoc(taskRef, taskData);
-    if (result?.id) {
-      console.log("Tarea guardada exitosamente.");
-    }
+    await addDoc(collection(db, "taskAssignments"), taskData);
+    console.log("Tarea guardada exitosamente.");
 
+    await fetchHistory(); // Refrescar historial tras guardar
   } catch (error) {
     console.error("Error al guardar la tarea:", error);
   }
 }
 
+// 🔁 Recuperar historial al cargar
+async function fetchHistory() {
+  const user = getAuth().currentUser;
+  if (!user) return;
+
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  if (!userDoc.exists()) return;
+
+  const groupId = userDoc.data().groupId;
+
+  const q = query(
+    collection(db, "taskAssignments"),
+    where("groupId", "==", groupId),
+    orderBy("time", "desc")
+  );
+
+  try {
+    const querySnapshot = await getDocs(q);
+    history.value = querySnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        task: data.task,
+        date: data.date,
+        user: data.username,
+      };
+    });
+  } catch (error) {
+    console.error("Error al obtener historial:", error);
+  }
+}
+
+// ⏳ Cargar historial al montar componente
+onMounted(() => {
+  fetchHistory();
+});
 </script>
+
 
 
 <template>
@@ -74,7 +110,7 @@ async function saveTaskToFirebase(task, date) {
     <div class="roulette-container">
       <div>
         <h2 class="roulette-title">Ruleta de la "suerte"</h2>
-        <p>Puedes cambiar la tarea de cada quesito haciendo click 🧀</p>
+        <p>Puedes cambiar la tarea de cada quesito tú mismo</p>
       </div>
       <div class="box-container">
         <div>
@@ -86,6 +122,8 @@ async function saveTaskToFirebase(task, date) {
     <div class="box-RecordRoulette">
       <RecordRoulette :history="history" />
     </div>
+
+    <ModalRouletteComponent v-show="showAlert" @acceptDate="acceptDate" @close="showAlert = false"/>
 
   </main>
 </template>

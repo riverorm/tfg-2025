@@ -73,7 +73,8 @@ onMounted(loadUserData);
     <div class="card-profile">
       <div class="card-header">
         <div class="profile-photo">
-          <img src="https://cdn.pixabay.com/photo/2015/10/09/00/55/lotus-978659_640.jpg" alt="Foto de perfil de {{ userName }}">
+          <img src="https://cdn.pixabay.com/photo/2015/10/09/00/55/lotus-978659_640.jpg" 
+          alt="Foto de perfil de {{ userName }}">
         </div>
       </div>
       <div class="card-body">
@@ -129,7 +130,7 @@ onMounted(loadUserData);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px;
+  padding: 20px;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 

@@ -1,21 +1,34 @@
 <script setup>
+import { ref, defineEmits, defineProps } from 'vue'
 
+const emit = defineEmits(['acceptDate', 'close'])
+
+const dateSelected = ref("")
+const today = ref(new Date().toISOString().split("T")[0])
+
+function acceptDate() {
+  emit('acceptDate', dateSelected.value)
+}
+
+function closeModal() {
+  emit('close')
+}
 </script>
 
-
 <template>
-  <div class="edit-modal">
+  <div class="modal-container">
     <div class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <h2 class="modal-title">Perfil editado!</h2>
-          <label for="modal-toggle" class="modal-close" @click="$emit('acceptDate')">&times;</label>
+          <h2 class="modal-title">Fecha de la tarea</h2>
+          <span class="modal-close" @click="closeModal">&times;</span>
         </div>
         <div class="modal-body">
-          <p>El perfil ha sido editado con éxito.</p>
+          <p>Selecciona la fecha donde quieres la tarea.</p>
+          <input type="date" :min="today" id="date" v-model="dateSelected" />
         </div>
         <div class="modal-footer">
-          <button @click="$emit('acceptDate')" class="btn">Aceptar</button>
+          <button @click="acceptDate" class="btn">Aceptar</button>
         </div>
       </div>
     </div>
@@ -23,8 +36,10 @@
 </template>
 
 
+
+
 <style>
-.edit-modal {
+.modal-container {
   background-color: #f3f4f6;
   display: flex;
   justify-content: center;
@@ -32,22 +47,25 @@
   height: 100vh;
   margin: 0;
   z-index: 9999;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Estilos del botón */
 .btn {
-  background-color: #2563eb;
-  color: white;
+  background-color: #ec8e41;
+  color: rgb(250, 247, 247);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  box-shadow: 0 2px 10px rgba(37, 36, 36, 0.089);
+
 }
 
 .btn:hover {
-  background-color: #1d4ed8;
+  background-color: #b46320;
 }
 
 /* Estilos del modal */
@@ -66,7 +84,7 @@
 .modal-content {
   background-color: white;
   padding: 1.5rem;
-  border-radius: 0.5rem;
+  border-radius: 30px;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   max-width: 28rem;
   width: 100%;
@@ -94,6 +112,15 @@
 
 .modal-body {
   margin-bottom: 1.5rem;
+}
+
+#date {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  margin-top: 20px;
 }
 
 .modal-footer {
