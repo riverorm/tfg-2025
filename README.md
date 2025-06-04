@@ -68,8 +68,9 @@ Desarrollado por [Ricky Rivero](https://github.com/riverorm) como parte del Trab
 
 ## 📄 Licencia
 
-Este proyecto está licenciado bajo los términos de la [Licencia MIT](./LICENSE.txt).  
-Esto significa que puedes utilizar, copiar, modificar y distribuir este software con libertad, siempre que mantengas la atribución correspondiente.  
-No se otorgan garantías implícitas ni explícitas sobre el uso del software.
+Este proyecto está licenciado bajo la licencia [Creative Commons Attribution-NonCommercial 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.es).  
+Esto significa que puedes utilizar, modificar y compartir el código con fines no comerciales, siempre que se reconozca la autoría original.  
+El uso con fines comerciales no está permitido bajo esta licencia.
 
 Consulta el archivo [`LICENSE.txt`](./LICENSE.txt) para más detalles.
+
