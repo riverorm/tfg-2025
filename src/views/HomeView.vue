@@ -2,8 +2,6 @@
 import CalendarComponent from '@/components/CalendarComponent.vue';
 import DoneList from '@/components/DoneList.vue';
 import UndoneList from '@/components/UndoneList.vue';
-
-
 </script>
 
 <template>

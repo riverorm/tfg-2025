@@ -1,104 +1,95 @@
 <template>
-
-    <div class="chat">
-      <h2>Chat de grupo</h2>
-      <div class="messages" ref="messagesContainer">
-        <div
-          v-for="message in messages"
-          :key="message.id"
-          class="message"
-          :class="{ mine: message.sender === userId }"
-        >
-          <p><strong>{{ message.senderName }}:</strong> {{ message.text }}</p>
-          <small>{{ new Date(message.timestamp?.seconds * 1000)
+  <div class="chat">
+    <h2>Chat de grupo</h2>
+    <div class="messages" ref="messagesContainer">
+      <div v-for="message in messages" :key="message.id" class="message" 
+      :class="{ mine: message.sender === userId }"
+      >
+        <p><strong>{{ message.senderName }}:</strong> {{ message.text }}</p>
+        <small>{{ new Date(message.timestamp?.seconds * 1000)
           .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</small>
-        </div>
       </div>
-      <form @submit.prevent="sendMessage">
-        <input
-          type="text"
-          v-model="newMessage"
-          placeholder="Escribe un mensaje..."
-          required
-        />
-        <button type="submit">Enviar</button>
-      </form>
     </div>
-  </template>
-  
-  <script>
-  import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
-  import { auth, db } from "../firebaseConfig";
-  
-  export default {
-    props: {
-      groupId: {
-        type: String,
-        required: true,
-      },
+    <form @submit.prevent="sendMessage">
+      <input type="text" v-model="newMessage" placeholder="Escribe un mensaje..." required />
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+</template>
+
+<script>
+import { collection, addDoc, onSnapshot, query, orderBy } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig";
+
+export default {
+  props: {
+    groupId: {
+      type: String,
+      required: true,
     },
-    data() {
-      return {
-        messages: [],
-        newMessage: "",
-        userId: auth.currentUser?.uid || "",
-        userName: auth.currentUser?.displayName || "Usuario",
-        unsubscribeMessages: null, // Guardar referencia al listener
+  },
+  data() {
+    return {
+      messages: [],
+      newMessage: "",
+      userId: auth.currentUser?.uid || "",
+      userName: auth.currentUser?.displayName || "Usuario",
+      unsubscribeMessages: null, // Guardar referencia al listener
+    };
+  },
+  methods: {
+    async sendMessage() {
+      if (!this.newMessage.trim()) return;
+
+      const messageData = {
+        text: this.newMessage.trim(),
+        sender: this.userId,
+        senderName: this.userName,
+        timestamp: new Date(),
       };
-    },
-    methods: {
-      async sendMessage() {
-        if (!this.newMessage.trim()) return;
-  
-        const messageData = {
-          text: this.newMessage.trim(),
-          sender: this.userId,
-          senderName: this.userName,
-          timestamp: new Date(),
-        };
-  
-        try {
-          await addDoc(collection(db, "groups", this.groupId, "messages"), messageData);
-          this.newMessage = ""; // Limpiar el campo de entrada
-        } catch (error) {
-          console.error("Error enviando el mensaje: ", error);
-        }
-      },
-      scrollToBottom() {
-        const container = this.$refs.messagesContainer;
-        if (container) {
-          container.scrollTop = container.scrollHeight;
-        }
-      },
-    },
-    mounted() {
-      // Escuchar mensajes en tiempo real
-      const messagesRef = collection(db, "groups", this.groupId, "messages");
-      const q = query(messagesRef, orderBy("timestamp"));
-  
-      this.unsubscribeMessages = onSnapshot(q, (snapshot) => {
-        this.messages = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-  
-        this.$nextTick(() => {
-          this.scrollToBottom();
-        });
-      });
-    },
-    beforeUnmount() {
-      // Limpiar listeners al desmontar el componente
-      if (this.unsubscribeMessages) {
-        this.unsubscribeMessages();
+
+      try {
+        await addDoc(collection(db, "groups", this.groupId, "messages"), messageData);
+        this.newMessage = ""; // Limpiar el campo de entrada
+      } catch (error) {
+        console.error("Error enviando el mensaje: ", error);
       }
     },
-  };
-  </script>
-  
-  
-  <style scoped>
-  .chat {
+    scrollToBottom() {
+      const container = this.$refs.messagesContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    },
+  },
+  mounted() {
+    // Escuchar mensajes en tiempo real
+    const messagesRef = collection(db, "groups", this.groupId, "messages");
+    const q = query(messagesRef, orderBy("timestamp"));
+
+    this.unsubscribeMessages = onSnapshot(q, (snapshot) => {
+      this.messages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    });
+  },
+  beforeUnmount() {
+    // Limpiar listeners al desmontar el componente
+    if (this.unsubscribeMessages) {
+      this.unsubscribeMessages();
+    }
+  },
+};
+</script>
+
+
+<style scoped>
+.chat {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -184,7 +175,4 @@ button {
 button:hover {
   background-color: #0b5ed7;
 }
-
-  </style>
-  
-  
+</style>

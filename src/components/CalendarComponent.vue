@@ -20,10 +20,10 @@
             'task-title__overdue': task.isOverdue
           }">
             <input type="checkbox" class="isdone-checkbox" :checked="task.isDone"
-              @change="() => toggleTaskCompletion(task)" :aria-label="`Marcar tarea '${task.task}' como completada`" />
+              @change="() => toggleTaskCompletion(task)" 
+              :aria-label="`Marcar tarea '${task.task}' como completada`" />
             <span class="task-name">{{ task.task }}</span>
           </div>
-
         </div>
       </div>
     </div>
