@@ -65,3 +65,11 @@ El proyecto se encuentra en una fase inicial de desarrollo. Se ha establecido la
 ## 👤 Autor
 
 Desarrollado por [Ricky Rivero](https://github.com/riverorm) como parte del Trabajo de Fin de Grado en Ingeniería Informática.
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo los términos de la [Licencia MIT](./LICENSE.txt).  
+Esto significa que puedes utilizar, copiar, modificar y distribuir este software con libertad, siempre que mantengas la atribución correspondiente.  
+No se otorgan garantías implícitas ni explícitas sobre el uso del software.
+
+Consulta el archivo [`LICENSE.txt`](./LICENSE.txt) para más detalles.
