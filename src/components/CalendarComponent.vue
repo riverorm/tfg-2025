@@ -145,6 +145,7 @@ function toggleTaskCompletion(task) {
   gap: 8px;
   justify-items: center;      /* Centra cada día */
   justify-content: center;    /* Centra el grid completo */
+  padding: 5px
 }
 
 .calendar-day {

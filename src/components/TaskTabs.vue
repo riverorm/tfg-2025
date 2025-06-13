@@ -150,7 +150,7 @@ export default {
 }
 
 .tabs button.active {
-  background-color: #ffaeae;
+  background-color: #fab65e;
   color: #000;
 }
 
@@ -190,11 +190,11 @@ button {
   border-radius: 8px;
   padding: 10px;
   font-weight: bold;
-  color: white;
+  color: rgb(20, 20, 20);
   cursor: pointer;
 }
 
 button:hover {
-  background-color: rgba(100, 100, 100, 0.6);
+  background-color: rgba(88, 88, 88, 0.555);
 }
 </style>
