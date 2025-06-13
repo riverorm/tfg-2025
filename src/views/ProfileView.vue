@@ -5,35 +5,40 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
 import ModalEditComponent from "@/components/ModalEditComponent.vue";
 
-// Referencias para datos del usuario
+// Variables reactivas
 const userName = ref("Cargando...");
 const userGroup = ref("Sin grupo");
-const isEditing = ref(false); // Indica si se está editando el nombre de usuario
-const showAlert = ref(false); // Controla la visibilidad del modal
+const userPhotoUrl = ref("");
+const defaultPhoto = "https://cdn.pixabay.com/photo/2015/10/09/00/55/lotus-978659_640.jpg";
+const isEditing = ref(false);
+const showAlert = ref(false);
 
-// Función para cargar datos del usuario
+// Cargar datos del usuario
 const loadUserData = async () => {
   const user = auth.currentUser;
 
   if (user) {
     userName.value = user.displayName || "Usuario desconocido";
+    userPhotoUrl.value = user.photoURL || defaultPhoto;
 
-    // Obtener datos adicionales de Firestore (si es necesario)
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       userGroup.value = userDoc.data().groupId || "Sin grupo";
+      if (userDoc.data().photoURL) {
+        userPhotoUrl.value = userDoc.data().photoURL;
+      }
     }
   } else {
     console.error("No hay un usuario autenticado.");
   }
 };
 
-// Función para habilitar la edición
+// Permitir editar el nombre
 const enableEditing = () => {
   isEditing.value = true;
 };
 
-// Función para guardar los cambios
+// Guardar cambios (nombre y foto)
 const saveChanges = async () => {
   const user = auth.currentUser;
 
@@ -42,14 +47,15 @@ const saveChanges = async () => {
       // Actualizar nombre en Firebase Authentication
       await updateProfile(user, {
         displayName: userName.value,
+        photoURL: userPhotoUrl.value || null,
       });
 
-      // Actualizar nombre en Firestore (si es necesario)
+      // Actualizar datos en Firestore
       await updateDoc(doc(db, "users", user.uid), {
         name: userName.value,
+        photoURL: userPhotoUrl.value || null,
       });
 
-      // Mostrar el modal al guardar con éxito
       isEditing.value = false;
       showAlert.value = true;
     } catch (error) {
@@ -59,12 +65,46 @@ const saveChanges = async () => {
   }
 };
 
-// Función para manejar la aceptación del modal
-const handleModalClose = () => {
-  showAlert.value = false; // Cerrar el modal
+// Subir imagen a Cloudinary
+const uploadImage = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "mi_preset_web"); // Cambia aquí
+  // No es necesario enviar cloud_name en el body, va en la URL
+
+  try {
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/dpyhtq8af/image/upload`, // Cambia aquí
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    userPhotoUrl.value = data.secure_url;
+
+    // Actualizar foto en perfil Firebase (opcional guardar inmediato)
+    const user = auth.currentUser;
+    if (user) {
+      await updateProfile(user, { photoURL: userPhotoUrl.value });
+      await updateDoc(doc(db, "users", user.uid), { photoURL: userPhotoUrl.value });
+    }
+  } catch (error) {
+    console.error("Error subiendo la imagen a Cloudinary:", error);
+    alert("Error subiendo la imagen.");
+  }
 };
 
-// Cargar datos al montar el componente
+// Cerrar modal
+const handleModalClose = () => {
+  showAlert.value = false;
+};
+
+// Carga inicial
 onMounted(loadUserData);
 </script>
 
@@ -72,39 +112,34 @@ onMounted(loadUserData);
   <div class="container">
     <div class="card-profile">
       <div class="card-header">
-        <div class="profile-photo">
-          <img src="https://cdn.pixabay.com/photo/2015/10/09/00/55/lotus-978659_640.jpg" 
-          alt="Foto de perfil de {{ userName }}">
-        </div>
+        <label class="profile-photo">
+          <img :src="userPhotoUrl || defaultPhoto" :alt="`Foto de perfil de ${userName}`" />
+          <div class="edit-overlay">
+            <i class="fa-solid fa-pencil"></i>
+          </div>
+          <input type="file" @change="uploadImage" accept="image/*" hidden />
+        </label>
       </div>
       <div class="card-body">
         <div class="name-profile">
           <h3>Nombre de usuario</h3>
-          <!-- Campo editable si está en modo edición -->
-          <input
-            type="text"
-            v-model="userName"
-            :readonly="!isEditing"
-            :class="{ editable: isEditing }"
-          />
+          <input type="text" v-model="userName" :readonly="!isEditing" :class="{ editable: isEditing }" />
         </div>
         <div class="houses-profile">
           <h3>Grupo</h3>
-          <!-- Grupo no editable -->
           <input type="text" :placeholder="userGroup" readonly />
         </div>
       </div>
       <div class="card-footer">
-        <!-- Botón para habilitar edición -->
         <button class="edit-button" @click="enableEditing" v-if="!isEditing">Editar</button>
-        <!-- Botón para guardar cambios -->
         <button class="save" @click="saveChanges" :disabled="!isEditing">Guardar</button>
       </div>
     </div>
   </div>
-  <!-- Modal para mostrar mensaje de éxito -->
+
   <ModalEditComponent v-if="showAlert" @acceptDate="handleModalClose" />
 </template>
+
 
 
 <style scoped>
@@ -135,9 +170,54 @@ onMounted(loadUserData);
 }
 
 .card-profile:hover {
-  transform: translateY(-5px);
+  transform: translateY(-1px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
+
+.profile-photo {
+  position: relative;
+  width: 192px;
+  height: 192px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  display: inline-block;
+  border: 4px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.edit-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: opacity 0.3s ease;
+}
+
+.profile-photo:hover .edit-overlay {
+  opacity: 1;
+}
+
+i {
+  font-size: 1.8rem;
+}
+
+
 
 @media (max-width: 768px) {
   .container {
@@ -227,7 +307,7 @@ button:disabled {
 }
 
 /* Espaciado entre botones */
-.card-footer button + button {
+.card-footer button+button {
   margin-left: 10px;
 }
 
@@ -238,7 +318,3 @@ h3 {
   color: #2c5282;
 }
 </style>
-
-
-
-  

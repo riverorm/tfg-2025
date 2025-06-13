@@ -1,34 +1,36 @@
 <template>
   <nav>
     <div class="nav-center">
-      <button>
-        <RouterLink to="/home" id="home" class="css-routerLink">
-          <h3><i class="fa-solid fa-house"></i> Inicio</h3>
-        </RouterLink>
-      </button>
-      <button>
-        <RouterLink to="/roulette" class="css-routerLink">
-          <h3><i class="fa-regular fa-compass"></i> Ruleta</h3>
-        </RouterLink>
-      </button>
-      <button>
-        <RouterLink to="/chat" id="chat" class="css-routerLink">
-          <h3><i class="fa-regular fa-comments"></i> Chat grupal</h3>
-        </RouterLink>
-      </button>
-      <button>
-        <RouterLink to="/profile" id="profile" class="css-routerLink">
-          <h3><i class="fa-solid fa-user"></i> Perfil</h3>
-        </RouterLink>
-      </button>
+      <RouterLink to="/home" id="home" class="button-link">
+        <i class="fa-solid fa-house"></i>
+        <span>Inicio</span>
+      </RouterLink>
+
+      <RouterLink to="/roulette" class="button-link">
+        <i class="fa-regular fa-compass"></i>
+        <span>Ruleta</span>
+      </RouterLink>
+
+      <RouterLink to="/chat" id="chat" class="button-link">
+        <i class="fa-regular fa-comments"></i>
+        <span>Chat grupal</span>
+      </RouterLink>
+
+      <RouterLink to="/profile" id="profile" class="button-link">
+        <i class="fa-solid fa-user"></i>
+        <span>Perfil</span>
+      </RouterLink>
     </div>
+
     <div class="nav-footer">
-      <button @click="handleLogout" id="logout" class="css-routerLink">
-        <h3><i class="fa-solid fa-right-from-bracket"></i> Salir</h3>
+      <button @click="handleLogout" id="logout" class="button-link logout-button">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Salir</span>
       </button>
     </div>
   </nav>
 </template>
+
 
 
 <script>
@@ -67,7 +69,6 @@ nav {
   overflow-y: auto;
 }
 
-.nav-header,
 .nav-center,
 .nav-footer {
   width: 100%;
@@ -77,7 +78,8 @@ nav {
   gap: 60px;
 }
 
-button {
+/* Estilo común para los botones visuales */
+.button-link {
   width: 85%;
   height: 60px;
   background-color: transparent;
@@ -91,47 +93,77 @@ button {
   padding-left: 32px;
   border-radius: 30px;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-button:hover {
+.button-link:hover {
   background-color: rgba(228, 183, 142, 0.76);
   transform: translateY(-3px);
+  color: rgba(29, 28, 28, 0.733);
 }
 
-h3{
+.button-link i {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.button-link span {
   color: rgba(44, 43, 43, 0.671);
 }
 
-h3:hover{
+.button-link span:hover {
   color: rgba(255, 136, 0, 0.685);
 }
 
-i{
-  margin-right: 8px; 
-}
-.css-routerLink {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  color: white;
-  text-decoration: none;
-  gap: 20px;
-  transition: color 0.3s ease;
+/* Botón especial para logout */
+.logout-button {
+  justify-content: flex-start;
 }
 
-.css-routerLink:hover {
-  color: var(--rojoclaro);
+/* Responsive */
+@media (max-width: 768px) {
+  nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    box-shadow: 0 -1px 10px rgba(37, 36, 36, 0.089);
+    z-index: 1000;
+  }
+
+  .nav-center,
+  .nav-footer {
+    flex-direction: row;
+    width: auto;
+    gap: 10px;
+  }
+
+  .button-link {
+    justify-content: center;
+    padding-left: 0;
+    width: auto;
+    height: auto;
+    padding: 10px 15px;
+    border-radius: 15px;
+  }
+
+  .button-link span {
+    display: none;
+  }
+
+  .button-link i {
+    margin: 0;
+    font-size: 20px;
+  }
 }
 
-.css-routerLink h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0;
-}
 
-
-button:hover img {
-  transform: scale(1.1);
-}
 
 </style>

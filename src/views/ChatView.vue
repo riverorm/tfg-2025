@@ -71,17 +71,16 @@ export default {
 
 <style scoped>
 .chat-view {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-width: 110%;
-    max-height: 700px;
-    margin-left: 300px;
-    padding: 25px;
-    opacity: 0.9;
-    align-content: center;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
 }
+
 </style>
 
 

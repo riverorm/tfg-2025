@@ -8,7 +8,6 @@
             <strong> Tarea:</strong> {{ task.task }}
           </h3>
           <div class="data">
-            <p>{{ task.user }}</p>
             <p><strong> Fecha:</strong> {{ task.date }}</p>
           </div>
         </div>
@@ -20,56 +19,54 @@
 
 <script>
 import { onAuthStateChanged } from 'firebase/auth' // Escucha cambios de sesión de usuario
-import { auth, db } from '../firebaseConfig' // Importa configuración de Firebase
-import { collection, doc, getDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore' // Funciones de Firestore
-import { markTaskAsUndone } from '@/utils/markTaskAsUndone.js' // Función personalizada para desmarcar tareas
+import { auth, db } from '../firebaseConfig' // Configuración Firebase
+import { collection, doc, getDoc, onSnapshot, orderBy, query, where } from 'firebase/firestore' // Firestore
+import { markTaskAsUndone } from '@/utils/markTaskAsUndone.js' // Función para desmarcar tarea
 
 export default {
-  name: 'DoneList', // Nombre del componente
+  name: 'DoneList',
 
   data() {
     return {
-      tasksDone: [], // Array para almacenar tareas completadas
+      tasksDone: [], // Array de tareas completadas
     }
   },
 
   methods: {
-    // Marca una tarea como no hecha
     markAsUndone(taskId) {
       markTaskAsUndone(taskId)
     },
   },
 
   mounted() {
-    // Detecta si el usuario está autenticado
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log('Usuario autenticado:', user)
-
-        // Obtiene el documento del usuario actual en Firestore
         getDoc(doc(db, 'users', user.uid)).then((userDoc) => {
           if (!userDoc.exists()) {
             console.error('El usuario no pertenece a ningún grupo.')
             return
           }
 
-          const groupId = userDoc.data().groupId // Extrae el ID del grupo del usuario
+          const groupId = userDoc.data().groupId
 
-          // Consulta en tiempo real las tareas completadas del grupo
           const tasksRef = collection(db, 'taskAssignments')
           const tasksQuery = query(
             tasksRef,
             where('groupId', '==', groupId),
-            where('isDone', '==', true), // Solo tareas hechas
-            orderBy('date') // Orden por fecha
+            where('isDone', '==', true),
+            where('userId', '==', user.uid),  // Filtro para traer solo tareas del usuario
+            orderBy('date')
           )
 
-          // Suscripción a cambios en las tareas hechas
           onSnapshot(tasksQuery, (snapshot) => {
-            this.tasksDone = snapshot.docs.map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }))
+            this.tasksDone = snapshot.docs.map(doc => {
+              const data = doc.data()
+              return {
+                id: doc.id,
+                task: data.task,
+                date: data.date,
+              }
+            })
             console.log('Historial de tareas terminadas:', this.tasksDone)
           })
         })
@@ -81,27 +78,28 @@ export default {
 }
 </script>
 
-  
-  <style scoped>
-  .list-task-done {
-    width: 45%;
-    background-color: rgba(250, 225, 194, 0.521);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-  }
-  
-  .list-task-done:hover {
-    transform: translateY(-2px);
-  }
-  
-  /* Estiliza la barra de desplazamiento */
-  
-  .title {
-    font-size: 25px;
+
+<style scoped>
+.list-task-done {
+  width: 45%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(252, 160, 132, 0.445);
+  border-radius: 12px;
+  padding: 16px;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.list-task-done:hover {
+  transform: translateY(-2px);
+}
+
+/* Estiliza la barra de desplazamiento */
+
+.title {
+  font-size: 25px;
     font-weight: 800;
     color: rgb(31, 30, 30);
     margin-bottom: 12px;
@@ -118,15 +116,16 @@ export default {
     margin-bottom: 8px;
   }
   
-  ul {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-    flex-grow: 1;
-    max-height: calc(100% - 60px);
-    overflow-y: auto;
-  }
+ ul {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+}
+
   
   /* Estiliza la barra de desplazamiento */
   ul::-webkit-scrollbar {

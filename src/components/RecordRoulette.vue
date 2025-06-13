@@ -1,3 +1,29 @@
+<template>
+  <div class="history-container">
+    <h3 class="title">Historial de tareas</h3>
+    <hr />
+
+    <input
+      type="text"
+      v-model="searchQuery"
+      placeholder="Filtrar por usuario o tarea..."
+      class="filter-input"
+    />
+
+    <div class="history-list" v-if="filteredHistory.length > 0">
+      <div class="task-card" v-for="(item, index) in filteredHistory" :key="index">
+        <p class="task"><strong>{{ item.task }}</strong></p>
+        <p class="info">🗓 {{ item.date }} &mdash; 👤 {{ item.user }}</p>
+      </div>
+    </div>
+
+    <div class="empty" v-else>
+      <div class="loader"></div>
+      <p class="message">No hay tareas que coincidan<span class="dots-blink">...</span></p>
+    </div>
+  </div>
+</template>
+
 <script>
 export default {
   props: {
@@ -6,27 +32,27 @@ export default {
       required: true,
     },
   },
-}
+  data() {
+    return {
+      searchQuery: '',
+    };
+  },
+  computed: {
+    filteredHistory() {
+      if (!this.searchQuery.trim()) return this.history;
+
+      const query = this.searchQuery.toLowerCase();
+
+      return this.history.filter(item => {
+        return (
+          item.task.toLowerCase().includes(query) ||
+          item.user.toLowerCase().includes(query)
+        );
+      });
+    }
+  }
+};
 </script>
-
-<template>
-  <div class="history-container">
-    <h3 class="title">Historial de tareas</h3>
-    <hr></hr>
-
-    <div class="history-list" v-if="history.length > 0">
-      <div class="task-card" v-for="(item, index) in history" :key="index">
-        <p class="task"><strong>{{ item.task }}</strong></p>
-        <p class="info">🗓 {{ item.date }} &mdash; 👤 {{ item.user }}</p>
-      </div>
-    </div>
-
-    <div class="empty" v-else>
-      <div class="loader"></div>
-      <p class="message">Esperando tareas<span class="dots-blink">...</span></p>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .history-container {
@@ -50,25 +76,6 @@ export default {
   color: #333;
 }
 
-.history-list {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  flex-grow: 1; /* <- hace que tome todo el espacio disponible */
-  overflow-y: auto; /* solo si es necesario */
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: center; /* Centra las tarjetas horizontalmente */
-  width: 100%;
-}
-
-
-
 hr {
   border: 0;
   width: 70%;
@@ -77,12 +84,37 @@ hr {
   margin-bottom: 20px;
 }
 
+.filter-input {
+  width: 80%;
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.filter-input:focus {
+  outline: none;
+  border-color: #f79577;
+  box-shadow: 0 0 4px rgba(247, 149, 119, 0.6);
+}
+
+.history-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
 .task-card {
   width: 80%;
   background-color: #f8deb675;
   padding: 0.75rem;
   border-radius: 8px;
-  transition:  0.3s ease;
+  transition: 0.3s ease;
 }
 .task-card:hover {
   background: #f1f5f9;
@@ -160,3 +192,4 @@ hr {
   100% { height: 65%; opacity: 0; }
 }
 </style>
+

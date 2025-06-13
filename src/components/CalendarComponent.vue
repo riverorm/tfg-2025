@@ -91,15 +91,21 @@ function toggleTaskCompletion(task) {
 
 <style scoped>
 .calendar-container {
+  margin-top: 2rem; /* o más, según necesidad */
+  padding-top: 1.5rem;
   max-width: 1000px;
   width: 90%;
-  margin: 1rem auto;
-  padding: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
   background: #eeededc0;
   border-radius: 5px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.295);
   font-family: 'Segoe UI', sans-serif;
+  /* Asegurarse que no tenga overflow oculto */
+  overflow: visible;
 }
+
+
 
 .calendar-header {
   display: flex;
@@ -137,6 +143,8 @@ function toggleTaskCompletion(task) {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
+  justify-items: center;      /* Centra cada día */
+  justify-content: center;    /* Centra el grid completo */
 }
 
 .calendar-day {
@@ -146,6 +154,8 @@ function toggleTaskCompletion(task) {
   text-align: center;
   box-shadow: inset 0 0 0 1px #e0e0e0;
   transition: transform 0.2s;
+  width: 100%;
+  max-width: 150px;    /* Para que no se estire en móviles */
 }
 
 .calendar-day:hover {
@@ -168,8 +178,7 @@ function toggleTaskCompletion(task) {
 .day-tasks {
   margin-top: 0.5rem;
   max-height: 150px;
-  overflow-y: hidden;
-  /* Elimina el scroll */
+  overflow-y: hidden; /* Elimina el scroll */
 }
 
 .task-title {
@@ -180,7 +189,6 @@ function toggleTaskCompletion(task) {
   text-align: left;
   display: flex;
   align-items: center;
-  /* Para alinear verticalmente el checkbox con el texto */
 }
 
 .task-title__done {
@@ -197,7 +205,6 @@ function toggleTaskCompletion(task) {
   outline: none;
   cursor: pointer;
   margin-right: 10px;
-  /* Espacio entre checkbox y texto */
   background-color: white;
 }
 
@@ -223,4 +230,43 @@ function toggleTaskCompletion(task) {
 .task-title__overdue .task-name::after {
   content: ' ⚠️';
 }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .calendar-days {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .calendar-days {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-days {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-day {
+    padding: 0.75rem;
+  }
+
+  .nav-button {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .week-range {
+    font-size: 1rem;
+  }
+}
+
+
 </style>

@@ -93,17 +93,19 @@ export default {
 </script>
 
 <style scoped>
+
 .list-task-undone {
   width: 45%;
-  background-color: rgba(252, 160, 132, 0.445);
-  border-radius: 12px;
-  padding: 16px;
+  height: 500px;
   display: flex;
   flex-direction: column;
+  background-color: rgba(250, 233, 228, 0.445);
+  border-radius: 12px;
+  padding: 16px;
   align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Sombra sutil */
 }
+
 
 .list-task-undone:hover {
   transform: translateY(-2px);
@@ -135,9 +137,10 @@ ul {
   margin: 0;
   list-style-type: none;
   flex-grow: 1;
-  max-height: calc(100% - 60px);
+  height: 100%;
   overflow-y: auto;
 }
+
 
 /* Estiliza la barra de desplazamiento */
 ul::-webkit-scrollbar {
@@ -167,7 +170,7 @@ li {
   justify-content: space-between;
   width: 97%;
   padding: 12px;
-  border-bottom: 1px solid rgba(253, 149, 149, 0.689);
+  border-bottom: 1px solid rgba(247, 223, 223, 0.689);
   gap: 15px;
   align-items: center;
 }
@@ -214,13 +217,13 @@ button:hover {
 }
 
 .task-overdue {
-  border: 1px solid rgba(255, 0, 0, 0.459);
-  background-color: #ffe5e580;
+  border: 1px solid rgba(248, 208, 208, 0.459);
+  background-color: #1d0c0c80;
   width: 80%;
 }
 
 .overdue-warning {
-  color: rgb(250, 38, 38);
+  color: rgb(238, 137, 137);
   margin-left: 8px;
   font-weight: bold;
 }
