@@ -20,6 +20,12 @@
         <i class="fa-solid fa-user"></i>
         <span>Perfil</span>
       </RouterLink>
+
+        <RouterLink to="/upload" id="upload" class="button-link">
+          <i class="fa-solid fa-file-upload"></i>
+          <span>Documentos</span>
+        </RouterLink>
+
     </div>
 
     <div class="nav-footer">
@@ -163,7 +169,4 @@ nav {
     font-size: 20px;
   }
 }
-
-
-
 </style>
