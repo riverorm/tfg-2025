@@ -1,4 +1,4 @@
-# TFG 2025 – Aplicación Web de Gestión de Tareas para la Convivencia con Vue 3 y Vite
+# TFG 2025 – Aplicación Web de Gestión de Tareas para la Convivencia
 
 Este proyecto constituye el desarrollo de una aplicación web moderna como parte del Trabajo de Fin de Grado (TFG) en Ingeniería Informática. La solución está construida utilizando Vue 3 y Vite, enfocándose en una arquitectura modular, rendimiento óptimo y escalabilidad.
 
